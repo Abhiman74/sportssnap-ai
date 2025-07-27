@@ -31,8 +31,8 @@ client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_CONNECTION_STRING)
 db = client.sports_api_db
 
 # --- Model and Class Names Loading ---
-model = tf.keras.models.load_model('sports_classifier.keras')
-with open("class_names.txt", "r") as f:
+model = tf.keras.models.load_model('./sports_classifier.keras')
+with open("./class_names.txt", "r") as f:
     class_names = [line.strip() for line in f.readlines()]
 
 # --- API Endpoints ---
