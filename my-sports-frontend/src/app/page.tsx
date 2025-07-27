@@ -7,21 +7,15 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Badge } from "@/components/ui/badge";
 import {
   Upload,
-  ImageIcon,
-  Zap,
-  Target,
   Brain,
   Camera,
-  ArrowRight,
-  Star,
+  Target,
   CheckCircle,
-  Sparkles,
-  Heart,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 
 export default function SportsRecognitionLanding() {
-  // --- START: Logic for the component ---
   const [file, setFile] = useState<File | null>(null);
   const [prediction, setPrediction] = useState<{ sport: string; confidence: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,8 +55,10 @@ export default function SportsRecognitionLanding() {
       }
       const data = await response.json();
       setPrediction(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred.";
+      setError(errorMessage);
+      console.error("Error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +73,7 @@ export default function SportsRecognitionLanding() {
       setFormMessage("Subscribing...");
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/subscribe', {
+        const response = await fetch('/api/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email }),
@@ -88,7 +84,6 @@ export default function SportsRecognitionLanding() {
         setFormMessage("Failed to subscribe. Please try again.");
       }
     };
-  // --- END: Logic for the component ---
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
@@ -100,7 +95,6 @@ export default function SportsRecognitionLanding() {
         accept="image/*"
       />
       
-      {/* Header */}
       <header className="px-4 lg:px-6 h-16 flex items-center border-b border-orange-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <Link href="/" className="flex items-center justify-center">
           <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-amber-500 rounded-full flex items-center justify-center shadow-lg">
@@ -124,7 +118,6 @@ export default function SportsRecognitionLanding() {
       </header>
 
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full opacity-60 blur-3xl"></div>
@@ -147,7 +140,7 @@ export default function SportsRecognitionLanding() {
                   </h1>
                   <p className="max-w-[600px] text-amber-700 md:text-xl leading-relaxed">
                     Turn any sports photo into instant knowledge! Our AI wizard recognizes 50+ sports faster than you
-                    can say "touchdown" ⚡
+                    can say &quot;touchdown&quot; ⚡
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 min-[400px]:flex-row">
@@ -165,7 +158,6 @@ export default function SportsRecognitionLanding() {
           </div>
         </section>
 
-        {/* Live Demo Section */}
         <section id="demo" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-amber-50 to-orange-50">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center text-center mb-12">
@@ -176,8 +168,8 @@ export default function SportsRecognitionLanding() {
                     Ready to Be Amazed? 🤯
                 </h2>
                 <p className="max-w-[600px] text-amber-700 md:text-xl leading-relaxed mt-4">
-                    Don't just take our word for it - experience the magic yourself! Upload any sports photo and prepare
-                    to be blown away! 🎆
+                  Don&apos;t just take our word for it - experience the magic yourself! Upload any sports photo and prepare
+                  to be blown away! 🎆
                 </p>
             </div>
             <div className="w-full max-w-md mx-auto">
@@ -195,32 +187,14 @@ export default function SportsRecognitionLanding() {
                   {isLoading ? "Please wait..." : "And watch our AI work its magic! ✨"}
                 </p>
               </div>
-              
               <div className="mt-6">
-                {error && (
-                  <div className="p-4 bg-red-100 rounded-xl border-2 border-red-300 shadow-lg">
-                    <p className="font-bold text-red-700 text-lg">Error: {error}</p>
-                  </div>
-                )}
-                {prediction && (
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200 shadow-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                        <CheckCircle className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-green-700 text-lg">{prediction.sport}</p>
-                        <p className="text-sm text-green-600">Confidence: {prediction.confidence}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {error && (<div className="p-4 bg-red-100 rounded-xl border-2 border-red-300 shadow-lg"><p className="font-bold text-red-700 text-lg">Error: {error}</p></div>)}
+                {prediction && (<div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200 shadow-lg"><div className="flex items-center gap-3"><div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md"><CheckCircle className="h-6 w-6 text-white" /></div><div><p className="font-bold text-green-700 text-lg">{prediction.sport}</p><p className="text-sm text-green-600">Confidence: {prediction.confidence}</p></div></div></div>)}
               </div>
             </div>
           </div>
         </section>
 
-        {/* --- START: Features Section --- */}
         <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-orange-100 to-amber-100">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -229,58 +203,31 @@ export default function SportsRecognitionLanding() {
                   ✨ Amazing Features
                 </Badge>
                 <h2 className="text-3xl font-bold tracking-tight sm:text-5xl text-amber-900">
-                  Why Everyone's Obsessed with SportSnap 🤩
+                  Why Everyone&apos;s Obsessed with SportSnap 🤩
                 </h2>
                 <p className="max-w-[900px] text-amber-700 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our AI doesn't just recognize sports - it makes you feel like a sports genius! ⚡
+                  Our AI doesn&apos;t just recognize sports - it makes you feel like a sports genius! ⚡
                 </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-6xl items-start gap-8 py-12 lg:grid-cols-3 lg:gap-8">
               <Card className="border-2 border-orange-200 bg-gradient-to-br from-white to-orange-50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-orange-300">
-                <CardHeader className="text-center p-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                    <Zap className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-amber-900 text-xl">⚡ Lightning Speed</CardTitle>
-                  <CardDescription className="text-amber-700 text-base">
-                    Get results faster than a cheetah on Red Bull. Under 2 seconds guaranteed! 🚀
-                  </CardDescription>
-                </CardHeader>
+                <CardHeader className="text-center p-6"><div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg"><Zap className="h-8 w-8 text-white" /></div><CardTitle className="text-amber-900 text-xl">⚡ Lightning Speed</CardTitle><CardDescription className="text-amber-700 text-base">Get results faster than a cheetah on Red Bull. Under 2 seconds guaranteed! 🚀</CardDescription></CardHeader>
               </Card>
               <Card className="border-2 border-orange-200 bg-gradient-to-br from-white to-orange-50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-orange-300">
-                <CardHeader className="text-center p-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                    <Target className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-amber-900 text-xl">🎯 High Accuracy</CardTitle>
-                  <CardDescription className="text-amber-700 text-base">
-                    With an accuracy rate of 99.2%, our AI rarely misses the mark. Trustworthy and reliable results every time.
-                  </CardDescription>
-                </CardHeader>
+                <CardHeader className="text-center p-6"><div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg"><Target className="h-8 w-8 text-white" /></div><CardTitle className="text-amber-900 text-xl">🎯 High Accuracy</CardTitle><CardDescription className="text-amber-700 text-base">With an accuracy rate of 99.2%, our AI rarely misses the mark. Trustworthy and reliable results every time.</CardDescription></CardHeader>
               </Card>
               <Card className="border-2 border-orange-200 bg-gradient-to-br from-white to-orange-50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-orange-300">
-                <CardHeader className="text-center p-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg">
-                    <Brain className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-amber-900 text-xl">🧠 Smart AI Brain</CardTitle>
-                  <CardDescription className="text-amber-700 text-base">
-                    Trained on millions of diverse images, our model understands context, lighting, and tricky angles.
-                  </CardDescription>
-                </CardHeader>
+                <CardHeader className="text-center p-6"><div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg"><Brain className="h-8 w-8 text-white" /></div><CardTitle className="text-amber-900 text-xl">🧠 Smart AI Brain</CardTitle><CardDescription className="text-amber-700 text-base">Trained on millions of diverse images, our model understands context, lighting, and tricky angles.</CardDescription></CardHeader>
               </Card>
             </div>
           </div>
         </section>
-        {/* --- END: Features Section --- */}
         
-        {/* Pricing Section */}
         <section id="pricing" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-white to-amber-50">
-           {/* ... Your pricing section JSX goes here ... */}
+           <div className="container px-4 md:px-6"><div className="flex flex-col items-center justify-center space-y-4 text-center"><div className="space-y-4"><Badge className="bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 border-amber-300 shadow-sm">💎 Flexible Pricing</Badge><h2 className="text-3xl font-bold tracking-tight sm:text-5xl text-amber-900">A Plan for Every Ambition</h2><p className="max-w-[900px] text-amber-700 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">Whether you&apos;re just starting out or scaling up, we have a plan that fits your needs.</p></div></div><div className="mx-auto grid max-w-6xl items-start gap-8 py-12 lg:grid-cols-3 lg:gap-12"><Card className="border-2 border-orange-200 bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"><CardHeader className="text-center p-6"><h3 className="text-2xl font-bold text-amber-800">Hobbyist</h3><p className="text-4xl font-extrabold text-orange-600 mt-2">$0<span className="text-xl font-medium text-amber-700">/month</span></p><p className="text-sm text-amber-600 mt-2">Perfect for getting started and personal projects.</p></CardHeader><div className="p-6 pt-0"><ul className="space-y-3 text-amber-700"><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>50 uploads per month</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Standard recognition speed</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Community support</span></li></ul><Button variant="outline" size="lg" className="w-full mt-6 border-2 border-orange-300 text-orange-700 hover:bg-orange-50 bg-white/70 backdrop-blur-sm shadow-md">Get Started for Free</Button></div></Card><Card className="border-3 border-orange-500 bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 relative"><Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg">Most Popular</Badge><CardHeader className="text-center p-6"><h3 className="text-2xl font-bold text-amber-800">Pro</h3><p className="text-4xl font-extrabold text-orange-600 mt-2">$15<span className="text-xl font-medium text-amber-700">/month</span></p><p className="text-sm text-amber-600 mt-2">For professionals and power users who need more.</p></CardHeader><div className="p-6 pt-0"><ul className="space-y-3 text-amber-700"><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>5,000 uploads per month</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Priority recognition speed</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Batch processing enabled</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Email & chat support</span></li></ul><Button size="lg" className="w-full mt-6 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">Choose Pro</Button></div></Card><Card className="border-2 border-orange-200 bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"><CardHeader className="text-center p-6"><h3 className="text-2xl font-bold text-amber-800">Enterprise</h3><p className="text-4xl font-extrabold text-orange-600 mt-2">Custom</p><p className="text-sm text-amber-600 mt-2">For teams and businesses with custom needs.</p></CardHeader><div className="p-6 pt-0"><ul className="space-y-3 text-amber-700"><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Unlimited uploads</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Dedicated infrastructure</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>Custom model training</span></li><li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-green-500" /><span>24/7 dedicated support</span></li></ul><Button variant="outline" size="lg" className="w-full mt-6 border-2 border-orange-300 text-orange-700 hover:bg-orange-50 bg-white/70 backdrop-blur-sm shadow-md">Contact Sales</Button></div></Card></div></div>
         </section>
 
-        {/* CTA Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 relative overflow-hidden">
           <div className="absolute inset-0 overflow-hidden"><div className="absolute top-0 left-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div><div className="absolute bottom-0 right-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div></div>
           <div className="container px-4 md:px-6 relative">
@@ -318,7 +265,6 @@ export default function SportsRecognitionLanding() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
         <p className="text-xs text-amber-700">© 2025 SportSnap. Made with ❤️ for sports lovers everywhere.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
